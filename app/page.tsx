@@ -1,6 +1,6 @@
 // import { signIn, signOut, useSession } from "next-auth/react";
-"use client";
-import { useRouter } from "next/navigation";
+
+// import { useRouter } from "next/navigation";
 
 import { z } from "zod";
 
@@ -10,16 +10,14 @@ import Link from "next/link";
 
 import Image from "next/image";
 import logo from "../public/cooking.png";
-import React, { ReactElement, ReactNode, RefObject, useContext, useEffect, useRef, useState } from "react";
-
+// import React, { ReactElement, ReactNode, RefObject, useContext, useEffect, useRef, useState } from "react";
+import { QuickMeal } from "./quickMeal";
 import { useMainIngreds } from "./useMainIngreds";
 // import Text from "./text";
 // import type { MouseEvent } from "react";
 
 // import { api } from "~/utils/api";
 // import A11YSlider from "a11y-slider";
-
-import randomColor from "randomcolor"; // import the script
 
 // import RecipeCard from "./RecipeCard";
 
@@ -28,7 +26,7 @@ import randomColor from "randomcolor"; // import the script
 // import type { MainIngredsContext } from "../context/context";
 
 export default function Home() {
-  const router = useRouter();
+  // const router = useRouter();
 
   const primaryNavItems: [string, string][] = [];
   primaryNavItems.push(["Pricing", "#"]);
@@ -37,71 +35,71 @@ export default function Home() {
   primaryNavItems.push(["Career", "#"]);
   primaryNavItems.push(["Community", ""]);
 
-  const primaryNavRef = useRef<HTMLElement>(null);
-  const headerRef = useRef<HTMLElement>(null);
-  const hamburgerRef = useRef<HTMLImageElement>(null);
-  const iconCloseRef = useRef<HTMLImageElement>(null);
+  // const primaryNavRef = useRef<HTMLElement>(null);
+  // const headerRef = useRef<HTMLElement>(null);
+  // const hamburgerRef = useRef<HTMLImageElement>(null);
+  // const iconCloseRef = useRef<HTMLImageElement>(null);
 
   // const sliderHostRef = useRef<HTMLUListElement>(null);
 
-  const handleMobileNavToggle = (e: React.MouseEvent<Element, MouseEvent>): void => {
-    const primaryNav = primaryNavRef.current;
-    const header = headerRef.current as HTMLHeadingElement;
-    // const hamburger = hamburgerRef.current!;
-    // const iconClose = iconCloseRef.current!;
+  // const handleMobileNavToggle = (e: React.MouseEvent<Element, MouseEvent>): void => {
+  //   const primaryNav = primaryNavRef.current;
+  //   const header = headerRef.current as HTMLHeadingElement;
+  //   // const hamburger = hamburgerRef.current!;
+  //   // const iconClose = iconCloseRef.current!;
 
-    if (!primaryNav || !header) return;
-    if (!e.target) return;
-    const primaryNavButton = e.target as HTMLButtonElement;
+  //   if (!primaryNav || !header) return;
+  //   if (!e.target) return;
+  //   const primaryNavButton = e.target as HTMLButtonElement;
 
-    // const children = primaryNavButton.childNodes;
+  //   // const children = primaryNavButton.childNodes;
 
-    if (primaryNavButton.hasAttribute("data-visible")) {
-      //hamburger currently hidden
-      primaryNavButton.setAttribute("aria-expanded", "false");
-      primaryNavButton.classList.remove("bg-close_icon");
-      primaryNavButton.classList.add("bg-hamburger_icon");
+  //   if (primaryNavButton.hasAttribute("data-visible")) {
+  //     //hamburger currently hidden
+  //     primaryNavButton.setAttribute("aria-expanded", "false");
+  //     primaryNavButton.classList.remove("bg-close_icon");
+  //     primaryNavButton.classList.add("bg-hamburger_icon");
 
-      // for (const node of children) {
-      //   if ((node as HTMLElement).classList.contains("icon-hamburger")) {
-      //     (node as HTMLElement).setAttribute("aria-hidden", "false");
-      //     (node as HTMLElement).classList.toggle("hidden");
-      //   } else if ((node as HTMLElement).classList.contains("icon-close")) {
-      //     (node as HTMLElement).setAttribute("aria-hidden", "true");
-      //     (node as HTMLElement).classList.toggle("hidden");
-      //   }
-      // }
-      // hamburger.setAttribute("aria-hidden", "true");
-      // iconClose.setAttribute("aria-hidden", "false");
-    } else {
-      primaryNavButton.setAttribute("aria-expanded", "true");
-      primaryNavButton.classList.add("bg-close_icon");
-      primaryNavButton.classList.remove("bg-hamburger_icon");
-      // for (const node of children) {
-      //   if ((node as HTMLElement).classList.contains("icon-hamburger")) {
-      //     (node as HTMLElement).setAttribute("aria-hidden", "true");
-      //     (node as HTMLElement).classList.toggle("hidden");
-      //   } else if ((node as HTMLElement).classList.contains("icon-close")) {
-      //     (node as HTMLElement).setAttribute("aria-hidden", "false");
-      //     (node as HTMLElement).classList.toggle("hidden");
-      //   }
-      // }
-    }
-    primaryNav.classList.toggle("start:hidden");
-    // primaryNav.classList.toggle("fixed");
-    primaryNavButton.toggleAttribute("data-visible"); // for aria only?
-    //below are for overlay; this need to be put on the element and the only thing that need to be toggered is "before: hidden?"
-    header.classList.toggle("before:content-['']");
-    header.classList.toggle("before:fixed");
-    header.classList.toggle("before:inset-0");
-    header.classList.toggle("before:bg-gradient-to-b");
-    header.classList.toggle("before:from-drop_shadow_start");
-    header.classList.toggle("before:to-drop_shadow_end");
-    header.classList.toggle("z-50");
-    header.classList.toggle("relative");
-    // iconClose.classList.toggle("hidden");
-    // hamburger.classList.toggle("hidden");
-  };
+  //     // for (const node of children) {
+  //     //   if ((node as HTMLElement).classList.contains("icon-hamburger")) {
+  //     //     (node as HTMLElement).setAttribute("aria-hidden", "false");
+  //     //     (node as HTMLElement).classList.toggle("hidden");
+  //     //   } else if ((node as HTMLElement).classList.contains("icon-close")) {
+  //     //     (node as HTMLElement).setAttribute("aria-hidden", "true");
+  //     //     (node as HTMLElement).classList.toggle("hidden");
+  //     //   }
+  //     // }
+  //     // hamburger.setAttribute("aria-hidden", "true");
+  //     // iconClose.setAttribute("aria-hidden", "false");
+  //   } else {
+  //     primaryNavButton.setAttribute("aria-expanded", "true");
+  //     primaryNavButton.classList.add("bg-close_icon");
+  //     primaryNavButton.classList.remove("bg-hamburger_icon");
+  //     // for (const node of children) {
+  //     //   if ((node as HTMLElement).classList.contains("icon-hamburger")) {
+  //     //     (node as HTMLElement).setAttribute("aria-hidden", "true");
+  //     //     (node as HTMLElement).classList.toggle("hidden");
+  //     //   } else if ((node as HTMLElement).classList.contains("icon-close")) {
+  //     //     (node as HTMLElement).setAttribute("aria-hidden", "false");
+  //     //     (node as HTMLElement).classList.toggle("hidden");
+  //     //   }
+  //     // }
+  //   }
+  //   primaryNav.classList.toggle("start:hidden");
+  //   // primaryNav.classList.toggle("fixed");
+  //   primaryNavButton.toggleAttribute("data-visible"); // for aria only?
+  //   //below are for overlay; this need to be put on the element and the only thing that need to be toggered is "before: hidden?"
+  //   header.classList.toggle("before:content-['']");
+  //   header.classList.toggle("before:fixed");
+  //   header.classList.toggle("before:inset-0");
+  //   header.classList.toggle("before:bg-gradient-to-b");
+  //   header.classList.toggle("before:from-drop_shadow_start");
+  //   header.classList.toggle("before:to-drop_shadow_end");
+  //   header.classList.toggle("z-50");
+  //   header.classList.toggle("relative");
+  //   // iconClose.classList.toggle("hidden");
+  //   // hamburger.classList.toggle("hidden");
+  // };
 
   // const sliderHost = sliderHostRef.current;
   // let slider;
@@ -136,7 +134,7 @@ export default function Home() {
 
         <header
           className='primary-header mt-6'
-          ref={headerRef}
+          // ref={headerRef}
           // before:fixed before:inset-0 before:bg-pink-300 before:content-['']
         >
           <div className='general-container'>
@@ -152,9 +150,9 @@ export default function Home() {
                 />
               </Link>
               <button
-                onClick={e => {
-                  handleMobileNavToggle(e);
-                }}
+                // onClick={e => {
+                //   handleMobileNavToggle(e);
+                // }}
                 className='mobile-nav-toggle fixed right-4 top-8 aspect-square w-[1.65rem] cursor-pointer    bg-transparent bg-hamburger_icon bg-contain bg-center bg-no-repeat p-[0.5em] sm:hidden'
                 aria-controls='primary-navigation'
                 aria-expanded='false'>
@@ -179,7 +177,8 @@ export default function Home() {
                 // ml-auto will push element to the right (opposite of l)
                 className='primary-navigation start:fixed start:inset-x-4 start:top-28 start:mx-auto start:hidden start:max-w-[25rem] start:rounded start:bg-bg_neutral_100 start:p-12 start:shadow-nav'
                 id='primary-navigation'
-                ref={primaryNavRef}>
+                // ref={primaryNavRef}
+              >
                 <ul
                   aria-label='Primary'
                   role='list'
@@ -239,10 +238,11 @@ export default function Home() {
                 </div>
                 <ul className='numbered-items me-auto ms-auto w-fit [counter-reset:marker]' role='list'>
                   <li className='[counter-increment:marker] '>
+                    c
                     <div className='list-title'>
                       <h3 className='col-start-2 col-end-3 row-start-1 row-end-2 font-bold leading-4'>One - First Item</h3>
                       <p className='col-start-2 col-end-[-1] mt-[1em] max-w-[42ch] opacity-70 xs:col-start-1'>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias error eveniet illo, voluptate architecto laborum non deleniti
+                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias error eveniet illo, voluptate architecto labo·rum non deleniti
                         eos commodi numquam odit. Culpa ipsa soluta assumenda?
                       </p>
                     </div>
@@ -470,166 +470,3 @@ export default function Home() {
     </>
   );
 }
-
-const QuickMeal: React.FunctionComponent = () => {
-  const { mainIngreds, updateMainIngreds } = useMainIngreds();
-
-  const [mainIngredsSet, setMainIngredsSet] = useState(new Set<string>());
-
-  //${!mainIngredsSet.has(ingred) && mainIngredsSet.size > 2 ? "btn-disabled" : ""}
-
-  useEffect(() => {
-    setMainIngredsSet(new Set(mainIngreds));
-  }, [mainIngreds]);
-
-  // const ingredsRouter = useRouter();
-
-  // const mainIngredients = new Set<string>();
-  // const [firstRecipe, setFirstRecipe] = useState<Recipe | null>(null);
-
-  // const setMainIngreds = useContext(setMainIngredsContextType);
-
-  // const mainIngreds = useContext(MainIngredsContextType);
-
-  const buttonGroupRef = useRef<HTMLDivElement>(null);
-
-  // const { data, refetch: getIdesRefetch } = api.recipe.getIdeas.useQuery(mainIngreds, { enabled: false });
-
-  const handleIngredButtonToggle = (e: React.MouseEvent<Element, MouseEvent>): void => {
-    const ingredButton = e.target as HTMLButtonElement;
-    const ingredient = ingredButton.innerText;
-    console.log("chosen ingredient==>", ingredient);
-
-    if (mainIngredsSet.has(ingredient)) {
-      mainIngredsSet.delete(ingredient);
-      ingredButton.classList.remove("ring-2");
-      ingredButton.classList.remove("ring-offset-4");
-      // if (mainIngreds.size < 3) {
-      //   ingredButtons.forEach((ingredButton) => {
-      //     // @ts-error-expected dddklk
-      //     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      //     ingredButton.classList.remove("btn-disabled");
-      //   });
-      // }
-    } else {
-      mainIngredsSet.add(ingredient);
-      // ingredButton.classList.add("ring-2");
-      // ingredButton.classList.add("ring-offset-4");
-      // if (mainIngreds.size > 2) {
-      //   ingredButtons.forEach((ingredButton) => {
-      //     console.dir(ingredButton);
-      //     // @ts-error-expected dddklk
-      //     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      //     ingredButton.className += "btn-disabled";
-      //   });
-      // }
-    }
-    updateMainIngreds(Array.from(mainIngredsSet));
-
-    console.log("mainIngreds", mainIngreds);
-
-    if (!buttonGroupRef.current) {
-      console.log("no current");
-      return;
-    }
-    // console.dir(buttonGroupRef.current.childNodes);
-    const childNodes = buttonGroupRef.current.childNodes;
-
-    childNodes.forEach(child => {
-      if (!(child instanceof HTMLButtonElement)) return;
-      if (mainIngredsSet && mainIngredsSet.size > 2) {
-        if (!mainIngredsSet.has(child.value)) {
-          child.classList.add("btn-disabled");
-        }
-      } else {
-        child.classList.remove("btn-disabled");
-      }
-    });
-
-    // if (mainIngreds.size > 0) {
-    //   ingredButton.classList.add("btn-disabled");
-    // } else {
-    //   ingredButton.classList.remove("btn-disabled");
-    // }
-  };
-
-  //need a reaact function to limit when it runs
-
-  const color = randomColor(); // a hex code for an attractive color
-  // console.log("color==>", color);
-  const ingredients = ["potato", "beef", "celery", "pork", "lamb", "radish"];
-
-  const ingredButtons = ingredients.map(ingred => {
-    console.log("mainIngredsSet==>", mainIngredsSet);
-    return (
-      <button
-        key={ingred}
-        value={ingred}
-        onClick={e => {
-          handleIngredButtonToggle(e);
-        }}
-        // className={`${mainIngreds.size > 0 ? "btn-disabled" : ""} btn`}
-        // className={`btn bg-['${color}']`}
-        className={`btn opacity-40 ${mainIngredsSet.has(ingred) ? "ring-2 ring-offset-4" : ""}`}
-        style={{ backgroundColor: `${randomColor()}` }}>
-        {ingred}
-      </button>
-    );
-  });
-
-  //  type buttontype = React.ButtonHTMLAttributes<HTMLButtonElement>["type"]
-
-  // const handleIngreds = async () => {
-  //   const ingredsSchema = z.array(z.string());
-  //   // const recipes = await getIdesRefetch();
-  //   // if (!recipes.data?.[0]) return;
-  //   // const firstRecipe = recipes.data[0];
-
-  //   // setFirstRecipe(firstRecipe);
-  // };
-
-  return (
-    <div className='flex flex-col items-center gap-4'>
-      <div ref={buttonGroupRef} className='button-group flex w-full justify-center gap-2 '>
-        {ingredButtons}
-      </div>
-      {/* <button
-        onClick={() => {
-          console.log("mainIngreds==>", mainIngreds);
-          void ingredsRouter.push(
-            {
-              pathname: "/RecipeCard",
-              query: {
-                data: JSON.stringify(Array.from(mainIngreds)),
-              },
-            },
-            "/suggestions",
-            { shallow: false },
-          );
-        }}
-        className="btn btn-outline btn-primary btn-wide"
-      >
-        Go
-      </button> */}
-      <Link
-        href={{
-          pathname: "/RecipeCard",
-          // query: { data: JSON.stringify(Array.from(mainIngreds)) },
-        }}
-        // as={`/nia`}
-        className='btn btn-outline btn-primary btn-wide'>
-        Go
-      </Link>
-      <div>
-        {/* {firstRecipe && (
-          <RecipeCard
-            recipe={firstRecipe}
-            onDelete={() => {
-              return;
-            }}
-          />
-        )} */}
-      </div>
-    </div>
-  );
-};
