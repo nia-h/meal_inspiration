@@ -1,6 +1,6 @@
 "use client";
 import { useDebouncedCallback } from "use-debounce";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useMainIngreds } from "./useMainIngreds";
 import randomColor from "randomcolor"; // import the script
 import Link from "next/link";
@@ -11,10 +11,10 @@ import { useSearchParams, usePathname, useRouter } from "next/navigation";
 //   return <div>My Post: {slug}</div>;
 // }
 
-export const QuickMeal = ({ params }: { params: Promise<{ slug: string }> }) => {
-  const searchParams = useSearchParams();
+export const QuickMeal = () => {
   const pathname = usePathname();
-  const { replace } = useRouter();
+  // console.log("pathname==>", pathname);
+  // const { replace } = useRouter();
 
   // const { mainIngreds, updateMainIngreds } = useMainIngreds();
 
@@ -23,48 +23,35 @@ export const QuickMeal = ({ params }: { params: Promise<{ slug: string }> }) => 
   const buttonGroupRef = useRef<HTMLDivElement>(null);
 
   const handleIngredButtonToggle = (e: React.MouseEvent<Element, MouseEvent>): void => {
-    const params = new URLSearchParams(searchParams);
-
     const ingredButton = e.target as HTMLButtonElement;
     const ingredient = ingredButton.innerText;
     // console.log("chosen ingredient==>", ingredient);
 
     if (mainIngredsSet.has(ingredient)) {
-      mainIngredsSet.delete(ingredient);
+      setMainIngredsSet(prev => {
+        prev.delete(ingredient);
+        console.log("prev==>", prev);
+
+        return new Set(prev);
+      });
+
       ingredButton.classList.remove("ring-2");
       ingredButton.classList.remove("ring-offset-4");
     } else {
-      mainIngredsSet.add(ingredient);
+      setMainIngredsSet(prev => {
+        prev.add(ingredient);
+        console.log("prev==>", prev);
+        return new Set(prev);
+      });
     }
     // updateMainIngreds(Array.from(mainIngredsSet));
-    if (mainIngredsSet.size > 0) {
-      params.set("ingreds", Array.from(mainIngredsSet).join("-"));
-    } else {
-      params.delete("ingreds");
-    }
-    replace(`${pathname}?${params.toString()}`);
+
+    // replace(`${pathname}?${params.toString()}`);
 
     // console.log("mainIngreds", mainIngreds);
-
-    if (!buttonGroupRef.current) {
-      console.log("no current");
-      return;
-    }
-    const childNodes = buttonGroupRef.current.childNodes;
-
-    childNodes.forEach(child => {
-      if (!(child instanceof HTMLButtonElement)) return;
-      if (mainIngredsSet && mainIngredsSet.size > 2) {
-        if (!mainIngredsSet.has(child.value)) {
-          child.classList.add("btn-disabled");
-        }
-      } else {
-        child.classList.remove("btn-disabled");
-      }
-    });
   };
 
-  const color = randomColor(); // a hex code for an attractive color
+  // const color = randomColor(); // a hex code for an attractive color
 
   const ingredients = ["potato", "beef", "celery", "pork", "lamb", "radish"];
 
@@ -84,9 +71,38 @@ export const QuickMeal = ({ params }: { params: Promise<{ slug: string }> }) => 
     );
   });
 
-  // useEffect(() => {
-  //   setMainIngredsSet(new Set(mainIngreds));
-  // }, [mainIngreds]);
+  useEffect(() => {
+    if (!buttonGroupRef.current) {
+      console.log("no current");
+      return;
+    }
+    const childNodes = buttonGroupRef.current.childNodes;
+
+    childNodes.forEach(child => {
+      if (!(child instanceof HTMLButtonElement)) return;
+      if (mainIngredsSet && mainIngredsSet.size > 2) {
+        if (!mainIngredsSet.has(child.value)) {
+          child.classList.add("btn-disabled");
+        }
+      } else {
+        child.classList.remove("btn-disabled");
+      }
+    });
+  }, [mainIngredsSet]);
+
+  const createQueryString = useCallback(() => {
+    const searchParams = useSearchParams();
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (mainIngredsSet.size > 0) {
+      params.set("ingreds", Array.from(mainIngredsSet).join("-"));
+    } else {
+      params.delete("ingreds");
+    }
+    console.log("params.toString()==>", params.toString());
+
+    return params.toString();
+  }, [mainIngredsSet]);
 
   return (
     <div className='flex flex-col items-center gap-4'>
@@ -95,7 +111,7 @@ export const QuickMeal = ({ params }: { params: Promise<{ slug: string }> }) => 
       </div>
 
       <Link
-        href={`/dashboard/quickMeal/?${Array.from(mainIngredsSet).join("-")}`}
+        href={`/quickMeal/?${createQueryString()}`}
         // as={`/nia`}
         className='btn btn-outline btn-primary btn-wide'>
         Go
