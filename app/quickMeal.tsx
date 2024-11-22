@@ -16,7 +16,7 @@ export const QuickMeal = ({ params }: { params: Promise<{ slug: string }> }) => 
   const pathname = usePathname();
   const { replace } = useRouter();
 
-  const { mainIngreds, updateMainIngreds } = useMainIngreds();
+  // const { mainIngreds, updateMainIngreds } = useMainIngreds();
 
   const [mainIngredsSet, setMainIngredsSet] = useState(new Set<string>());
 
@@ -24,7 +24,6 @@ export const QuickMeal = ({ params }: { params: Promise<{ slug: string }> }) => 
 
   const handleIngredButtonToggle = (e: React.MouseEvent<Element, MouseEvent>): void => {
     const params = new URLSearchParams(searchParams);
-    console.log("params==>", params);
 
     const ingredButton = e.target as HTMLButtonElement;
     const ingredient = ingredButton.innerText;
@@ -37,16 +36,13 @@ export const QuickMeal = ({ params }: { params: Promise<{ slug: string }> }) => 
     } else {
       mainIngredsSet.add(ingredient);
     }
-    updateMainIngreds(Array.from(mainIngredsSet));
-
-    // if (term) {
-    //   params.set("query", term);
-    // } else {
-    //   params.delete("query");
-    // }
-    if (mainIngreds[0]) {
-      replace(`${pathname}?${Array.from(mainIngredsSet).join("-")}`);
+    // updateMainIngreds(Array.from(mainIngredsSet));
+    if (mainIngredsSet.size > 0) {
+      params.set("ingreds", Array.from(mainIngredsSet).join("-"));
+    } else {
+      params.delete("ingreds");
     }
+    replace(`${pathname}?${params.toString()}`);
 
     // console.log("mainIngreds", mainIngreds);
 
@@ -88,9 +84,9 @@ export const QuickMeal = ({ params }: { params: Promise<{ slug: string }> }) => 
     );
   });
 
-  useEffect(() => {
-    setMainIngredsSet(new Set(mainIngreds));
-  }, [mainIngreds]);
+  // useEffect(() => {
+  //   setMainIngredsSet(new Set(mainIngreds));
+  // }, [mainIngreds]);
 
   return (
     <div className='flex flex-col items-center gap-4'>
@@ -99,10 +95,7 @@ export const QuickMeal = ({ params }: { params: Promise<{ slug: string }> }) => 
       </div>
 
       <Link
-        href={{
-          pathname: "/RecipeCard",
-          // query: { data: JSON.stringify(Array.from(mainIngreds)) },
-        }}
+        href={`/dashboard/quickMeal/?${Array.from(mainIngredsSet).join("-")}`}
         // as={`/nia`}
         className='btn btn-outline btn-primary btn-wide'>
         Go

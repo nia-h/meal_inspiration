@@ -1,4 +1,4 @@
-import { resetPasswordAction } from "@/app/QickMeal/[slug]/actions";
+import { resetPasswordAction } from "@/app/protected/reset-password";
 import { FormMessage, Message } from "@/components/form-message";
 import { SubmitButton } from "@/components/submit-button";
 import { Input } from "@/components/ui/input";
