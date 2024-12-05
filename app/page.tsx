@@ -11,7 +11,7 @@ import Link from "next/link";
 import Image from "next/image";
 import logo from "../public/cooking.png";
 // import React, { ReactElement, ReactNode, RefObject, useContext, useEffect, useRef, useState } from "react";
-import { QuickMeal } from "./quickMeal";
+import { QuickMealButtons } from "./quickMealButtons";
 // import { MainIngredsProvider } from "./mainIngreds-Provider";
 // import { useMainIngreds } from "./useMainIngreds";
 // import Text from "./text";
@@ -124,7 +124,7 @@ export default function Home() {
           {/* <p className='text-2xl text-pink-400'>{hello.data ? hello.data.greeting : "Loading tRPC query..."}</p> */}
         </div>
         {/* <AuthShowcase /> */}
-        <QuickMeal />
+        <QuickMealButtons />
         <button
           // onClick={() => {
 

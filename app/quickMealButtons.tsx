@@ -11,13 +11,7 @@ import { useSearchParams, usePathname, useRouter } from "next/navigation";
 //   return <div>My Post: {slug}</div>;
 // }
 
-export const QuickMeal = () => {
-  const pathname = usePathname();
-  // console.log("pathname==>", pathname);
-  // const { replace } = useRouter();
-
-  // const { mainIngreds, updateMainIngreds } = useMainIngreds();
-
+export const QuickMealButtons = () => {
   const [mainIngredsSet, setMainIngredsSet] = useState(new Set<string>());
 
   const buttonGroupRef = useRef<HTMLDivElement>(null);
@@ -70,6 +64,35 @@ export const QuickMeal = () => {
       </button>
     );
   });
+  // const createQueryString = useCallback(() => {
+  //   const searchParams = useSearchParams();
+  //   const params = new URLSearchParams(searchParams.toString());
+
+  //   if (mainIngredsSet.size > 0) {
+  //     params.set("ingreds", Array.from(mainIngredsSet).join("-"));
+  //   } else {
+  //     params.delete("ingreds");
+  //   }
+  //   console.log("params.toString()==>", params.toString());
+
+  //   return params.toString();
+  // }, [mainIngredsSet]);
+
+  const createQueryString = () => {
+    const searchParams = useSearchParams();
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (mainIngredsSet.size > 0) {
+      params.set("ingreds", Array.from(mainIngredsSet).join("^"));
+    } else {
+      params.delete("ingreds");
+    }
+
+    return params.toString();
+  };
+  // const queryString = createQueryString();
+
+  // console.log("queryString==>", queryString);
 
   useEffect(() => {
     if (!buttonGroupRef.current) {
@@ -88,20 +111,7 @@ export const QuickMeal = () => {
         child.classList.remove("btn-disabled");
       }
     });
-  }, [mainIngredsSet]);
-
-  const createQueryString = useCallback(() => {
-    const searchParams = useSearchParams();
-    const params = new URLSearchParams(searchParams.toString());
-
-    if (mainIngredsSet.size > 0) {
-      params.set("ingreds", Array.from(mainIngredsSet).join("-"));
-    } else {
-      params.delete("ingreds");
-    }
-    console.log("params.toString()==>", params.toString());
-
-    return params.toString();
+    // setMyvalue(Math.random().toString());
   }, [mainIngredsSet]);
 
   return (
@@ -111,7 +121,10 @@ export const QuickMeal = () => {
       </div>
 
       <Link
-        href={`/quickMeal/?${createQueryString()}`}
+        // href={`/quickMeal/?${createQueryString()}`}
+        // href={`/QuickMeal/?${queryString}`}
+
+        href={`/QuickMeal?${createQueryString()}`}
         // as={`/nia`}
         className='btn btn-outline btn-primary btn-wide'>
         Go
