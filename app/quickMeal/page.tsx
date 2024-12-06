@@ -38,20 +38,29 @@ export default async function QuickMeal({
 
     // );
   };
-  c;
+
+  const queryBuiler = (array: string[]) => {
+    const query: object[] = [];
+    array.forEach(ingred => {
+      query.push({
+        Cleaned_Ingredients: {
+          contains: ingred,
+        },
+      });
+    });
+
+    return query;
+  };
+
   const results = await prisma.recipes.findMany({
-    // where: {
-    //   Cleaned_Ingredients: {
-
-    //       contains: ,
-    //     },
-
-    // },
+    where: {
+      AND: queryBuiler(ingredsArray),
+    },
     take: 1,
   });
 
-  const ingredArray = ingredsParser(results[0].Cleaned_Ingredients!);
-  console.log("ingredArray===>", ingredArray);
+  // const ingredArray = ingredsParser(results[0].Cleaned_Ingredients!);
+  console.log("results===>", results);
 
   return <div className='w-full'>{`${ingreds}`}</div>;
 }
