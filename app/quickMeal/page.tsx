@@ -1,9 +1,9 @@
-"use client";
 import prisma from "../../lib/db";
 import Image from "next/image";
 import { Suspense } from "react";
 import { fetchRecipe } from "../../lib/data";
 import { Metadata } from "next";
+import FoodPhoto from "./foodPhoto";
 
 import { createClient } from "@supabase/supabase-js";
 import fs from "fs/promises";
@@ -17,6 +17,10 @@ const supabase = createClient(
 // export const metadata: Metadata = {
 //   title: "Invoices",
 // };
+
+import { recipes as Recipe } from "@prisma/client";
+
+type customRecipe = Partial<Recipe> & { publicUrl?: string };
 
 export default async function QuickMeal({
   searchParams,
@@ -43,7 +47,7 @@ export default async function QuickMeal({
 
   const ingredsArray = ingreds.split("^");
 
-  // console.log("ingredsArray===>", ingredsArray);
+  console.log("ingredsArray===>", ingredsArray);
 
   const ingredsParser = (ingreds: string) => {
     // const ingredsSchema = z.array(z.string());
@@ -60,69 +64,107 @@ export default async function QuickMeal({
     // );
   };
 
-  // const queryBuiler = (array: string[]) => {
-  //   const query: object[] = [];
-  //   array.forEach(ingred => {
-  //     query.push({
-  //       Cleaned_Ingredients: {
-  //         contains: ingred,
-  //       },
-  //     });
-  //   });
+  const queryBuiler = (array: string[]) => {
+    const query: object[] = [];
+    array.forEach(ingred => {
+      query.push({
+        Cleaned_Ingredients: {
+          contains: ingred,
+        },
+      });
+    });
 
-  //   return query;
-  // };
+    return query;
+  };
 
-  // const query = queryBuiler(ingredsArray);
+  const query = queryBuiler(ingredsArray);
 
   // console.log("query==>", query);
 
-  // const recipes = await prisma.recipes.findMany({
-  //   where: {
-  //     AND: query,
-  //   },
-  //   take: 1,
-  // });
+  const recipes = await prisma.recipes.findMany({
+    where: {
+      AND: query,
+    },
+    take: 1,
+    select: {
+      id: true,
+      Title: true,
+      Image_Name: true,
+    },
+  });
 
-  // const downloadFile = async (bucketName: string, filePath: string, downloadFilePath: string) => {
-  //   const { data, error } = await supabase.storage.from(bucketName).download(filePath);
+  console.log("recipes==>", recipes);
 
-  //   if (error) {
-  //     throw error;
-  //   }
+  recipes.forEach((recipe: customRecipe) => {
+    recipe.publicUrl = supabase.storage.from("recipe_photos").getPublicUrl(`${recipe.Image_Name}.jpg`).data.publicUrl;
+  });
 
-  //   downloadUrl = URL.createObjectURL(data);
+  // const { data } = supabase.storage.from("recipe_photos").getPublicUrl(`${recipes[0].Image_Name}.jpg`);
 
-  //   console.log("downlaodUrl==>", downloadUrl);
+  //
 
-  //   const buffer = Buffer.from(await data.arrayBuffer());
-  //   // await fs.writeFile(downloadFilePath, buffer);
-  //   // console.log(`File downloaded to ${downloadFilePath}`);
-  // };
+  // return (
 
-  // const bucketName = "recipe_photos";
-  // const filePath = `/coconut-beef-curry.jpg`; // in your Supabase bucket
-  // const downloadFilePath = "/var/temp";
-  // downloadFile(bucketName, filePath, downloadFilePath);
-
-  // console.log("recipes===>", recipes);
-
-  const { data, error } = await supabase.storage.from("recipe_photos").download("/coconut-beef-curry.jpg");
-
-  console.log("data==>", data);
-  console.log("error==>", error);
-
-  const downloadUrl = URL.createObjectURL(data!);
-
+  //  <div className='mt-6 flow-root'>
+  //     <div className='inline-block min-w-full align-middle'>
+  //       <div className='rounded-lg bg-gray-50 p-2 md:pt-0'>
+  //         <table className='hidden min-w-full text-gray-900 md:table'>
+  //           <thead className='rounded-lg text-left text-sm font-normal'></thead>
+  //           <tbody className='bg-white'></tbody>
+  //         </table>
+  //         <FoodPhoto url={data.publicUrl} />
+  //         {/* <img src='/' className='rounded-full' width={40} height={40} alt={`picture of`} /> */}
+  //       </div>
+  //     </div>
+  //   </div>
+  // );
   return (
     <div className='mt-6 flow-root'>
       <div className='inline-block min-w-full align-middle'>
         <div className='rounded-lg bg-gray-50 p-2 md:pt-0'>
+          <div className='md:hidden'>{/* for mobile */}</div>
           <table className='hidden min-w-full text-gray-900 md:table'>
-            <thead className='rounded-lg text-left text-sm font-normal'></thead>
-            <tbody className='bg-white'></tbody>
+            <thead className='rounded-lg text-left text-sm font-normal'>
+              <tr>
+                <th scope='col' className='px-4 py-5 font-medium sm:pl-6'>
+                  <span className='sr-only'>Title</span>
+                </th>
+
+                <th scope='col' className='px-3 py-5 font-medium'>
+                  Date
+                </th>
+                <th scope='col' className='px-3 py-5 font-medium'>
+                  <span className='sr-only'>photo</span>
+                </th>
+                <th scope='col' className='relative py-3 pl-6 pr-3'>
+                  <span className='sr-only'>Edit</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody className='bg-red-700'>
+              {recipes?.map(recipe => (
+                <tr
+                  key={recipe.id}
+                  className='w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg'>
+                  <td className='whitespace-nowrap px-3 py-3'>{recipe.email}</td>
+                  <td className='whitespace-nowrap px-3 py-3'>{formatCurrency(recipe.amount)}</td>
+                  <td className='whitespace-nowrap px-3 py-3'>{formatDateToLocal(recipe.date)}</td>
+                  <td className='whitespace-nowrap px-3 py-3'>
+                    <recipeStatus status={recipe.status} />
+                  </td>
+                  <td className='whitespace-nowrap py-3 pl-6 pr-3'>
+                    <div className='flex items-center gap-3'>
+                      <Image src={"/"} className='rounded-full' width={50} height={50} alt={`${recipe.Title}'s picture`} />
+                      <p>{recipe.name}</p>
+                    </div>
+                  </td>
+                  <td className='whitespace-nowrap py-3 pl-6 pr-3'>
+                    <div className='flex justify-end gap-3'>{/* <Updaterecipe id={recipe.id} /> */}</div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
           </table>
-          <img src={downloadUrl} className='rounded-full' width={40} height={40} alt={`picture of`} />
         </div>
       </div>
     </div>

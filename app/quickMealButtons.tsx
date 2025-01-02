@@ -42,7 +42,7 @@ export const QuickMealButtons = () => {
 
     // replace(`${pathname}?${params.toString()}`);
 
-    // console.log("mainIngreds", mainIngreds);
+    // console.log("mainIngreds", mainIngreds);    vv
   };
 
   // const color = randomColor(); // a hex code for an attractive color
