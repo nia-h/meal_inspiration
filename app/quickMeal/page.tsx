@@ -85,7 +85,7 @@ export default async function QuickMeal({
     where: {
       AND: query,
     },
-
+    take: 5,
     select: {
       id: true,
       Title: true,
@@ -151,7 +151,13 @@ export default async function QuickMeal({
                   </td> */}
                   <td className='whitespace-nowrap py-3 pl-6 pr-3'>
                     <div className='flex items-center gap-3'>
-                      <Image src={recipe.publicUrl as string} className='rounded-full' width={50} height={50} alt={`${recipe.Title}'s picture`} />
+                      <Image
+                        src={recipe.publicUrl as string}
+                        className='object-contain h-[15em] w-[20em]'
+                        width={500}
+                        height={500}
+                        alt={`${recipe.Title}'s picture`}
+                      />
                       <p>{recipe.Title}</p>
                     </div>
                   </td>
