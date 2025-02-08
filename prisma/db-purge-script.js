@@ -1,4 +1,4 @@
-let skip = 8800;
+// let skip = 0;
 // while (skip + 100 < 9000) {
 //   console.log("skip==>", skip);
 //   const recipes = await prisma.recipes.findMany({
@@ -6,7 +6,7 @@ let skip = 8800;
 //     take: 100,
 //     select: {
 //       id: true,
-//       // Title: true,
+//       Title: true,
 //       Image_Name: true,
 //     },
 //   });
